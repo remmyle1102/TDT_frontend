@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Page from 'components/Page';
 import {
   Card,
@@ -14,25 +14,28 @@ import {
 import classnames from 'classnames';
 import Reports from 'components/Audit/Reports';
 import StartNewAudit from 'components/Audit/StartNewAudit';
+import axios from 'axios';
 
-class AuditPage extends React.Component {
-  constructor(props) {
-    super(props);
+function AuditPage(){
+  const [activeTab, setActiveTab] = useState('1');
+  const [reportList, setReportList] = useState([]);
+  const [updateTableData, setUpdateTableData] = useState(0);
 
-    this.toggle = this.toggle.bind(this);
-    this.state = {
-      activeTab: '1',
-    };
-  }
-
-  toggle(tab) {
-    if (this.state.activeTab !== tab) {
-      this.setState({
-        activeTab: tab,
-      });
+  async function fetchData() {
+    try {
+      const response = await axios.get(
+        'http://localhost:8080/api/fetch-report',
+      );
+      setReportList(response.data);
+    } catch (e) {
+      console.log(e);
     }
   }
-  render() {
+
+  useEffect(() => {
+    fetchData();
+  }, [updateTableData]);
+
     return (
       <Page>
         <Row>
@@ -44,10 +47,10 @@ class AuditPage extends React.Component {
                     <NavItem>
                       <NavLink
                         className={classnames({
-                          active: this.state.activeTab === '1',
+                          active: activeTab === '1',
                         })}
                         onClick={() => {
-                          this.toggle('1');
+                          setActiveTab('1');
                         }}
                       >
                         Reports
@@ -56,28 +59,28 @@ class AuditPage extends React.Component {
                     <NavItem>
                       <NavLink
                         className={classnames({
-                          active: this.state.activeTab === '2',
+                          active: activeTab === '2',
                         })}
                         onClick={() => {
-                          this.toggle('2');
+                          setActiveTab('2');
                         }}
                       >
                         Start New Audit
                       </NavLink>
                     </NavItem>
                   </Nav>
-                  <TabContent activeTab={this.state.activeTab}>
+                  <TabContent activeTab={activeTab}>
                     <TabPane tabId="1">
                       <Row>
                         <Col sm="12">
-                          <Reports />
+                          <Reports reportList={reportList}/>
                         </Col>
                       </Row>
                     </TabPane>
                     <TabPane tabId="2">
                       <Row>
                         <Col sm="12">
-                          <StartNewAudit />
+                          <StartNewAudit addReport={() => setUpdateTableData(updateTableData+1)} />
                         </Col>
                       </Row>
                     </TabPane>
@@ -90,6 +93,5 @@ class AuditPage extends React.Component {
       </Page>
     );
   }
-}
 
 export default AuditPage;

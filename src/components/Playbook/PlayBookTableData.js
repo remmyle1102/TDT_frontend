@@ -7,14 +7,19 @@ const StyledButton = styled(Button)`
   margin-right: 2.5px;
 `;
 const PlayBookTableData = props => {
-  const deletePlaybook = async id => {
+  const deletePlaybook = async (id,location) => {
     try {
-      await axios.delete('http://localhost:8080/api/delete-playbook/' + id);
+      const data = {id, location}
+      await axios.delete(`http://localhost:8080/api/delete-playbook`, {
+        data: data
+      });
       props.deletePlaybook(id);
     } catch (e) {
       console.log(e);
     }
   };
+
+
 
   return (
     <tbody>
@@ -24,12 +29,18 @@ const PlayBookTableData = props => {
           <td>{playbook.description}</td>
           <td>{playbook.addBy}</td>
           <td>
-            <StyledButton
-              color="danger"
-              onClick={() => deletePlaybook(playbook.id)}
-            >
-              Delete
-            </StyledButton>
+          {
+           (playbook.id === 2011 || playbook.id === 2017 || playbook.id === 3011) ? null : (
+
+               <StyledButton
+                 color="danger"
+                 onClick={() => deletePlaybook(playbook.id, playbook.location)}
+               >
+                 Delete
+               </StyledButton>
+
+           )
+          }
           </td>
         </tr>
       ))}

@@ -20,7 +20,7 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-function StartNewAudit() {
+function StartNewAudit(props) {
   const [hostList, setHostList] = useState([]);
   const [playbookList, setPlaybookList] = useState([]);
   const [hostData, setHostData] = useState([]);
@@ -29,13 +29,16 @@ function StartNewAudit() {
 
   const startNewAudit = async () => {
     try {
-      const data = { hostList, playbookList };
+      const data = { taskName, hostList, playbookList };
       const response = await axios.post(
         'http://localhost:8080/api/start-audit',
         data,
       );
-      console.log(response);
-    } catch (e) {}
+
+      props.addReport()
+    } catch (e) {
+      console.log(e)
+    }
   };
 
   useEffect(() => {

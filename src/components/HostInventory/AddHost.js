@@ -28,7 +28,7 @@ const AddHost = props => {
     try {
       const data = { name, ipAdd, port, description };
       await axios.post('http://localhost:8080/api/add-host', data);
-      props.addHost(data);
+      props.addHost();
       toggleModal();
     } catch (e) {
       console.log(e);

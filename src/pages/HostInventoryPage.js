@@ -7,11 +7,8 @@ import axios from 'axios';
 
 const HostInventoryPage = () => {
   const [hosts, setHosts] = useState([]);
+  const [updateTableData, setUpdateTableData] = useState(0);
 
-  const addHost = host => {
-    host.id = hosts.length + 1;
-    setHosts([...hosts, host]);
-  };
 
   const deleteHost = id => {
     setHosts(hosts.filter(host => host.id !== id));
@@ -29,7 +26,7 @@ const HostInventoryPage = () => {
       }
     }
     fetchData();
-  }, []);
+  }, [updateTableData]);
 
   return (
     <Page>
@@ -50,7 +47,7 @@ const HostInventoryPage = () => {
                 </thead>
                 <HostTableData hosts={hosts} deleteHost={deleteHost} />
               </Table>
-              <AddHost addHost={addHost} />
+              <AddHost addHost={() => setUpdateTableData(updateTableData+1)} />
             </CardBody>
           </Card>
         </Col>

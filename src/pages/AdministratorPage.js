@@ -18,7 +18,7 @@ const AdministratorPage = () => {
   };
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/user/fetch-user');
+      const response = await axios.get('http://localhost:8080/api/fetch-user');
       setUsers(response.data);
     } catch (e) {
       console.log(e);

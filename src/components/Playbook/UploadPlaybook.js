@@ -25,7 +25,7 @@ const UploadPlaybook = props => {
     formData.append('name', name);
     formData.append('description', description);
     try {
-      await axios.post("http://localhost:8080/upload-playbook",  formData);
+      await axios.post("http://localhost:8080/api/upload-playbook",  formData);
       props.addPlaybook(formData);
       toggleModal()
 

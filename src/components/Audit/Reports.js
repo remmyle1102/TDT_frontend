@@ -1,49 +1,84 @@
-import React from 'react';
-import { Table, Card, CardBody } from 'reactstrap';
-export default class Example extends React.Component {
-  render() {
+import React, { useState, useEffect } from 'react';
+import { Button, Table } from 'reactstrap';
+import JsonToTable from 'components/JsonToTable'
+import axios from 'axios';
+import styled from 'styled-components';
+
+const StyledButton = styled(Button)`
+  margin-left: 2.5px;
+  margin-right: 2.5px;
+`;
+function Reports(props) {
+  const [showReport, setShowReport] = useState(false);
+  const [reportData, setReportData] = useState([]);
+  const viewReport = async (location) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/api/fetch-report-data?location=${location}`)
+      setReportData(response.data)
+      console.log(response.data)
+      setShowReport(!showReport)
+    }catch (e) {
+      console.log(e)
+    }
+  }
+  const renderTable = (data) =>{
+    if (Array.isArray(data) === false ) {
+      const dataKey = Object.keys(data)
+      return dataKey.map( key => {
+        return  <JsonToTable data={data[key]} />
+      }
+      )
+    }
+    return <JsonToTable data={data}/>
+  }
     return (
-      <div>
-        <Card className="mb-3">
-          <CardBody>
-            <Table responsive>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Audit Date</th>
-                  <th>Task Name</th>
-                  <th>Problem</th>
-                  <th>Report</th>
-                {/* View  */}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>1/2/2019</td>
-                  <td>Mark</td>
-                  <td>Otto</td>
-                  <td>@mdo</td>
-                </tr>
-                <tr>
-                  <th>2</th>
-                  <td>1/2/2019</td>
-                  <td>Jacob</td>
-                  <td>Thornton</td>
-                  <td>@fat</td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>1/2/2019</td>
-                  <td>Larry</td>
-                  <td>the Bird</td>
-                  <td>@twitter</td>
-                </tr>
-              </tbody>
-            </Table>
-          </CardBody>
-        </Card>
+
+        showReport ?
+        <div>
+        <Button onClick={()=> setShowReport(!showReport)}>Back</Button>
+          {reportData.map( (report, index) => {
+            return (
+              <React.Fragment key={index}>
+                <h1>{report.folder}</h1>
+                {
+                  report.folder === "Task_Instance_DB" ?
+                    renderTable(report.dbTaskData)
+                    : report.fileData.map( (data) => (
+                      renderTable(data.FileData)
+                    ))
+                }
+              </React.Fragment>
+            )
+          })}
       </div>
+          :
+        <Table responsive>
+          <thead>
+          <tr>
+            <th>Audit Date</th>
+            <th>Task Name</th>
+            <th>Problem</th>
+            <th>Added by</th>
+            <th>Report</th>
+          </tr>
+          </thead>
+          <tbody>
+          {props.reportList.map(report => (
+            <tr key={report.id}>
+              <td>{report.date}</td>
+              <td>{report.name}</td>
+              <td>{report.problemCount}</td>
+              <td>{report.addBy}</td>
+              <td>
+                <StyledButton color="info" onClick={() => viewReport(report.location)}>
+                  View
+                </StyledButton>
+              </td>
+            </tr>
+          ))}
+          </tbody>
+        </Table>
+
     );
   }
-}
+export default Reports;

@@ -11,7 +11,7 @@ const StyledButton = styled(Button)`
 const HostTableData = (props) => {
   const deleteHost = async (id) => {
     try {
-      await axios.delete('http://localhost:8080/remove-host/' + id);
+      await axios.delete('http://localhost:8080/api/remove-host/' + id);
       props.deleteHost(id)
     }catch (e) {
       console.log(e)
