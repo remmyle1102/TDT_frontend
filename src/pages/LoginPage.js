@@ -1,35 +1,53 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
-import { Button, Card, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import React, { useState, useEffect } from 'react';
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+} from 'reactstrap';
 import axios from 'axios';
-import {withRouter} from 'react-router-dom'
-/**
- * @return {boolean}
- */
-function LoginPage (props){
+import { authenticationService } from 'services/authenticationService';
+import { Link } from 'react-router-dom';
+
+function LoginPage(props) {
   const {
     usernameLabel,
     usernameInputProps,
     passwordLabel,
     passwordInputProps,
+    history,
   } = props;
-
+  if (authenticationService.currentUser) {
+    history.push('/');
+  }
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const handleResponse = (response) => {
-        if ([400, 401, 403].indexOf(response.status) !== -1) {
-          // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-        }
-        localStorage.setItem('currentUser', response.data.accessToken);
-      return response;
-  }
-  const authHandler = async (e) => {
-    e.preventDefault()
+  const handleResponse = response => {
+    if ([400, 401, 403].indexOf(response.status) !== -1) {
+      // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
+    }
+    localStorage.setItem('currentUser', response.data.accessToken);
+    history.push('/');
+    return response;
+  };
+
+  const authHandler = async e => {
+    e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8080/login', {username, password})
-      handleResponse(response)
-    }catch (e) {
-      console.log(e)
+      const response = await axios.post('http://localhost:8080/login', {
+        username,
+        password,
+      });
+
+      handleResponse(response);
+      window.location.reload();
+    } catch (e) {
+      console.log(e);
     }
   };
   return (
@@ -42,7 +60,7 @@ function LoginPage (props){
     >
       <Col md={6} lg={4}>
         <Card body>
-          <Form onSubmit={authHandler}>
+          <Form>
             <div className="text-center pb-4">
               <h2>Audit Database</h2>
             </div>
@@ -62,10 +80,13 @@ function LoginPage (props){
                 onChange={e => setPassword(e.target.value)}
               />
             </FormGroup>
+
             <hr />
             <Button
-              type="submit"
+              onClick={authHandler}
               size="lg"
+              tag={Link}
+              to={'/'}
               className="bg-gradient-theme-left border-0"
               block
             >

@@ -29,15 +29,17 @@ function StartNewAudit(props) {
 
   const startNewAudit = async () => {
     try {
+      props.setLoading(true);
       const data = { taskName, hostList, playbookList };
       const response = await axios.post(
         'http://localhost:8080/api/start-audit',
         data,
       );
-
-      props.addReport()
+      props.addReport();
+      props.setLoading(false);
+      props.setActiveTab('1');
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   };
 
@@ -91,9 +93,9 @@ function StartNewAudit(props) {
                         }}
                         options={hostData.map(host => {
                           let hostObj = {};
-                          hostObj['label'] = `${host.name} (${host.ipAdd}:${
-                            host.port
-                          })`;
+                          hostObj[
+                            'label'
+                          ] = `${host.name} (${host.ipAdd}:${host.port})`;
                           hostObj['value'] = `${host.ipAdd}:${host.port}`;
                           return hostObj;
                         })}

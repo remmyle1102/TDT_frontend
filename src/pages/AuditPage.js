@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Page from 'components/Page';
 import {
   Card,
@@ -15,11 +15,13 @@ import classnames from 'classnames';
 import Reports from 'components/Audit/Reports';
 import StartNewAudit from 'components/Audit/StartNewAudit';
 import axios from 'axios';
+import LoadingOverlay from 'react-loading-overlay';
 
-function AuditPage(){
+function AuditPage() {
   const [activeTab, setActiveTab] = useState('1');
   const [reportList, setReportList] = useState([]);
   const [updateTableData, setUpdateTableData] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   async function fetchData() {
     try {
@@ -36,7 +38,12 @@ function AuditPage(){
     fetchData();
   }, [updateTableData]);
 
-    return (
+  return (
+    <LoadingOverlay
+      active={loading}
+      spinner
+      text={'Executing command, please wait...'}
+    >
       <Page>
         <Row>
           <Col>
@@ -73,14 +80,20 @@ function AuditPage(){
                     <TabPane tabId="1">
                       <Row>
                         <Col sm="12">
-                          <Reports reportList={reportList}/>
+                          <Reports reportList={reportList} />
                         </Col>
                       </Row>
                     </TabPane>
                     <TabPane tabId="2">
                       <Row>
                         <Col sm="12">
-                          <StartNewAudit addReport={() => setUpdateTableData(updateTableData+1)} />
+                          <StartNewAudit
+                            addReport={() =>
+                              setUpdateTableData(updateTableData + 1)
+                            }
+                            setLoading={setLoading}
+                            setActiveTab={setActiveTab}
+                          />
                         </Col>
                       </Row>
                     </TabPane>
@@ -91,7 +104,8 @@ function AuditPage(){
           </Col>
         </Row>
       </Page>
-    );
-  }
+    </LoadingOverlay>
+  );
+}
 
 export default AuditPage;

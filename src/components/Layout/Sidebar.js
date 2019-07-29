@@ -1,9 +1,6 @@
 import sidebarBgImage from 'assets/img/sidebar/sidebar-4.jpg';
 import React from 'react';
-import {
-  MdAccountCircle,
-  MdDashboard,
-} from 'react-icons/md';
+import { MdAccountCircle, MdDashboard } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 import {
   Collapse,
@@ -19,15 +16,17 @@ const sidebarBackground = {
   backgroundSize: 'cover',
   backgroundRepeat: 'no-repeat',
 };
-const pageContents = [
-  { to: '/login', name: 'login', exact: false, Icon: MdAccountCircle },
-];
 
 const navItems = [
   { to: '/', name: 'audit', exact: true, Icon: MdDashboard },
   { to: '/playbook', name: 'playbook', exact: true, Icon: MdDashboard },
   { to: '/inventory', name: 'host inventory', exact: true, Icon: MdDashboard },
-  { to: '/administrator', name: 'administrator', exact: true, Icon: MdDashboard },
+  {
+    to: '/administrator',
+    name: 'administrator',
+    exact: true,
+    Icon: MdDashboard,
+  },
 ];
 
 const bem = bn.create('sidebar');
@@ -38,7 +37,6 @@ class Sidebar extends React.Component {
     isOpenContents: true,
     isOpenPages: true,
   };
-
 
   render() {
     return (
@@ -51,10 +49,9 @@ class Sidebar extends React.Component {
               tag={NavLink}
               to="/"
               activeClassName="active"
-              exact={true}>
-              <h5 className="text-white">
-                Tien-Duy-Tan
-              </h5>
+              exact={true}
+            >
+              <h5 className="text-white">Tien-Duy-Tan</h5>
             </BSNavLink>
           </Navbar>
           <Nav vertical>
@@ -73,25 +70,6 @@ class Sidebar extends React.Component {
                 </BSNavLink>
               </NavItem>
             ))}
-
-
-            <Collapse isOpen={this.state.isOpenPages}>
-              {pageContents.map(({ to, name, exact, Icon }, index) => (
-                <NavItem key={index} className={bem.e('nav-item')}>
-                  <BSNavLink
-                    id={`navItem-${name}-${index}`}
-                    className="text-uppercase"
-                    tag={NavLink}
-                    to={to}
-                    activeClassName="active"
-                    exact={exact}
-                  >
-                    <Icon className={bem.e('nav-item-icon')} />
-                    <span className="">{name}</span>
-                  </BSNavLink>
-                </NavItem>
-              ))}
-            </Collapse>
           </Nav>
         </div>
       </aside>

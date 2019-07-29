@@ -1,6 +1,11 @@
 import React from 'react';
 import GAListener from 'components/GAListener';
-import { EmptyLayout, LayoutRoute, MainLayout } from 'components/Layout';
+import {
+  EmptyLayout,
+  LayoutRoute,
+  MainLayout,
+  PrivateLayoutRoute,
+} from 'components/Layout';
 import LoginPage from 'pages/LoginPage';
 
 // pages
@@ -12,59 +17,58 @@ import componentQueries from 'react-component-queries';
 import { BrowserRouter, Redirect, Switch } from 'react-router-dom';
 import './styles/reduction.scss';
 import axios from 'axios';
-
-
 function App() {
   axios.interceptors.request.use(function(config) {
-    config.headers.Authorization = 'Bearer ' + localStorage.getItem('currentUser');
-    return config
+    config.headers.Authorization =
+      'Bearer ' + localStorage.getItem('currentUser');
+    return config;
   });
-    return (
-      <BrowserRouter>
-        <GAListener>
-          <Switch>
-            <LayoutRoute
-              exact
-              path="/login"
-              layout={EmptyLayout}
-              component={LoginPage}
-            />
-            <LayoutRoute
-              exact
-              path="/"
-              layout={MainLayout}
-              component={AuditPage}
-            />
-            <LayoutRoute
-              exact
-              path="/audit"
-              layout={MainLayout}
-              component={AuditPage}
-            />
-            <LayoutRoute
-              exact
-              path="/inventory"
-              layout={MainLayout}
-              component={HostInventoryPage}
-            />
-            <LayoutRoute
-              exact
-              path="/administrator"
-              layout={MainLayout}
-              component={AdministratorPage}
-            />
-            <LayoutRoute
-              exact
-              path="/playbook"
-              layout={MainLayout}
-              component={PlayBookPage}
-            />
-            <Redirect to="/" />
-          </Switch>
-        </GAListener>
-      </BrowserRouter>
-    );
 
+  return (
+    <BrowserRouter>
+      <GAListener>
+        <Switch>
+          <LayoutRoute
+            exact
+            path="/login"
+            layout={EmptyLayout}
+            component={LoginPage}
+          />
+          <PrivateLayoutRoute
+            exact
+            path="/"
+            layout={MainLayout}
+            component={AuditPage}
+          />
+          <PrivateLayoutRoute
+            exact
+            path="/audit"
+            layout={MainLayout}
+            component={AuditPage}
+          />
+          <PrivateLayoutRoute
+            exact
+            path="/inventory"
+            layout={MainLayout}
+            component={HostInventoryPage}
+          />
+          <PrivateLayoutRoute
+            exact
+            path="/administrator"
+            layout={MainLayout}
+            component={AdministratorPage}
+          />
+          <PrivateLayoutRoute
+            exact
+            path="/playbook"
+            layout={MainLayout}
+            component={PlayBookPage}
+          />
+          <Redirect to={'/'} />
+        </Switch>
+      </GAListener>
+    </BrowserRouter>
+  );
 }
 
 const query = ({ width }) => {
